@@ -1,0 +1,8 @@
+#!/usr/bin/env zsh
+
+if (( $(bc <<< "$(xbacklight -get) > 16") ))
+then
+  xbacklight -dec 15
+else
+  xbacklight -set 1
+fi
