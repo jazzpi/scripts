@@ -12,6 +12,7 @@ then
     echo "Usage: $0 PROJECT-URL"
     echo "Example: $0 https://minecraft.curseforge.com/projects/project-ozone-2-reloaded"
     echo "         will download Project Ozone 2 Reloaded to the current directory"
+    exit 127
 fi
 
 DOWNLOAD_DIR=$(mktemp -d)
