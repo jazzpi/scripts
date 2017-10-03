@@ -1,0 +1,35 @@
+#!/bin/bash
+
+#########################################
+# curse-mp-dl -- Download a Curse modpack
+#########################################
+
+# Exit script on error
+set -e
+
+if [ -z $1 ]
+then
+    echo "Usage: $0 PROJECT-URL"
+    echo "Example: $0 https://minecraft.curseforge.com/projects/project-ozone-2-reloaded"
+    echo "         will download Project Ozone 2 Reloaded to the current directory"
+fi
+
+DOWNLOAD_DIR=$(mktemp -d)
+ORIGINAL_DIR=$PWD
+
+echo "Downloading modpack..."
+cd "$DOWNLOAD_DIR"
+wget --content-disposition "$1/files/latest"
+unzip *.zip
+echo "Downloaded modpack!"
+
+echo "Downloading mods..."
+cd $ORIGINAL_DIR
+mkdir -p mods && cd mods
+python -c "import json;f=open('$DOWNLOAD_DIR/manifest.json');j=json.load(f);list(map(print, map(lambda x:'https://minecraft.curseforge.com/projects/'+str(x['projectID'])+'/files/'+str(x['fileID'])+'/download',j['files'])))" | wget --content-disposition -i -
+cd ..
+echo "Downloaded mods!"
+
+echo "Copying overrides..."
+cp -r "$DOWNLOAD_DIR/overrides/"* .
+echo "Copied overrides!"
